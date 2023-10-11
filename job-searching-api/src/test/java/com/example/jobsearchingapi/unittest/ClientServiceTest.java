@@ -88,4 +88,13 @@ public class ClientServiceTest {
 
     assertTrue(expectedMessage.contains(exception.getMessage()));
   }
+
+  @Test
+  public void isUUIDValid_(){
+    when(clientRepository.existsClientByUuid("id")).thenReturn(false);
+    Exception exception = assertThrows(InvalidInputException.class, () -> clientServiceImp.isUUIDValid("id"));
+    String expectedMessage = "Provided UUID is not correct";
+
+    assertTrue(expectedMessage.contains(exception.getMessage()));
+  }
 }
