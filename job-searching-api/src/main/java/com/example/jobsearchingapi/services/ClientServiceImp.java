@@ -8,8 +8,6 @@ import com.example.jobsearchingapi.repositories.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
-
 @Service
 public class ClientServiceImp implements ClientService{
   private ClientRepository clientRepository;
