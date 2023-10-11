@@ -1,11 +1,10 @@
 package com.example.jobsearchingapi.integrationtest;
 
 import com.example.jobsearchingapi.controllers.ClientController;
-import com.example.jobsearchingapi.models.Client;
+import com.example.jobsearchingapi.exceptions.ErrorMessage;
 import com.example.jobsearchingapi.models.DTOs.ClientDTO;
 import com.example.jobsearchingapi.repositories.ClientRepository;
 import com.example.jobsearchingapi.services.ClientService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -37,7 +36,7 @@ public class ClientControllerTest {
   @Test
   public void register_OK_test() throws Exception {
     ClientDTO clientDTO = new ClientDTO("agi", "agi@job.com");
-    mockMvc.perform(post("/register")
+    mockMvc.perform(post("/clients")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(clientDTO)))
             .andExpect(status().is(200));
@@ -46,9 +45,10 @@ public class ClientControllerTest {
   @Test
   public void register_missing_name() throws Exception{
     ClientDTO clientDTO = new ClientDTO(null, "agi@job.com");
-    mockMvc.perform(post("/register")
+    mockMvc.perform(post("/clients")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(mapper.writeValueAsString(clientDTO)))
-            .andExpect(status().is(400));
+            .andExpect(status().is(400))
+            .andExpect(content().json(mapper.writeValueAsString(new ErrorMessage("Please provide client name", "uri=/clients"))));
   }
 }
