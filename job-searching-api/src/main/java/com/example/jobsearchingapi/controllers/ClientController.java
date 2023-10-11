@@ -20,7 +20,7 @@ public class ClientController {
   }
 
   @PostMapping("/clients")
-  public ResponseEntity<UUID> register (@RequestBody ClientDTO clientDTO) {
+  public ResponseEntity<String> register (@RequestBody ClientDTO clientDTO) {
     return ResponseEntity.ok(clientService.checkClientDetails(clientDTO));
   }
 }

@@ -5,5 +5,7 @@ import com.example.jobsearchingapi.models.DTOs.ClientDTO;
 import java.util.UUID;
 
 public interface ClientService {
-  UUID checkClientDetails (ClientDTO clientDTO);
+  String checkClientDetails (ClientDTO clientDTO);
+
+  void isUUIDValid (String id);
 }

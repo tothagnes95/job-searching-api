@@ -24,7 +24,7 @@ public class ClientServiceImp implements ClientService{
     return email.matches(emailRegex);
   }
 
-  public UUID checkClientDetails (ClientDTO clientDTO){
+  public String checkClientDetails (ClientDTO clientDTO){
     if(clientDTO.getName() == null && clientDTO.getEmail() == null) {
       throw new ResourceNotFoundException("Please provide client name and email");
     } else if(clientDTO.getName() == null) {
@@ -40,6 +40,12 @@ public class ClientServiceImp implements ClientService{
     }
     Client client = new Client(clientDTO.getName(), clientDTO.getEmail());
     clientRepository.save(client);
-      return client.getId();
+      return client.getUuid();
+  }
+
+  public void isUUIDValid (String id) {
+    if(!clientRepository.existsClientByUuid(id)) {
+      throw new InvalidInputException("Provided UUID is not correct");
+    }
   }
 }
