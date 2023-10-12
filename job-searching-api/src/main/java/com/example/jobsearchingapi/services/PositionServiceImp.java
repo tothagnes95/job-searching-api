@@ -3,13 +3,12 @@ package com.example.jobsearchingapi.services;
 import com.example.jobsearchingapi.exceptions.InvalidInputException;
 import com.example.jobsearchingapi.exceptions.ResourceNotFoundException;
 import com.example.jobsearchingapi.models.DTOs.PositionDTO;
+import com.example.jobsearchingapi.models.themuseapi.ResultsDTO;
 import com.example.jobsearchingapi.models.Position;
 import com.example.jobsearchingapi.repositories.PositionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 public class PositionServiceImp implements PositionService{
@@ -46,7 +45,12 @@ public class PositionServiceImp implements PositionService{
         .orElseThrow(() -> new ResourceNotFoundException("Please provide position id"));
     }
 
-    public List<Position> findAllByDescriptionAndLocation (PositionDTO positionDTO) {
-        return positionRepository.findAllByDescriptionContainingAndLocation(positionDTO.getDescription(), positionDTO.getLocation());
+    public ResultsDTO findAllByDescriptionAndLocation (PositionDTO positionDTO) {
+        String uri = "https://www.themuse.com/api/public/jobs?page=1";
+        RestTemplate restTemplate = new RestTemplate();
+        ResultsDTO positionsFromAPI = restTemplate.getForObject(uri, ResultsDTO.class);
+
+        return positionsFromAPI;
+        //return positionRepository.findAllByDescriptionContainingAndLocation(positionDTO.getDescription(), positionDTO.getLocation());
     }
 }
