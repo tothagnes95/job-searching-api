@@ -8,6 +8,9 @@ import com.example.jobsearchingapi.repositories.PositionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class PositionServiceImp implements PositionService{
     private PositionRepository positionRepository;
@@ -17,7 +20,7 @@ public class PositionServiceImp implements PositionService{
         this.positionRepository = positionRepository;
     }
 
-    public String checkPositionDetails (PositionDTO positionDTO) {
+    public void checkPositionDetails (PositionDTO positionDTO) {
         if(positionDTO.getLocation() == null && positionDTO.getDescription() == null) {
             throw  new ResourceNotFoundException("Please provide description and location");
         } else if(positionDTO.getDescription() == null) {
@@ -29,8 +32,21 @@ public class PositionServiceImp implements PositionService{
         } else if(positionDTO.getLocation().length() > 50) {
             throw new InvalidInputException("The provided location must be shorter than 50 character");
         }
+    }
+
+    public String savePosition (PositionDTO positionDTO) {
         Position position = new Position(positionDTO.getDescription(), positionDTO.getLocation());
         positionRepository.save(position);
-        return "URL";
+        return position.getUrl();
+    }
+
+    public Position findById (String id) {
+    return positionRepository
+        .findById(Long.valueOf(id))
+        .orElseThrow(() -> new ResourceNotFoundException("Please provide position id"));
+    }
+
+    public List<Position> findAllByDescriptionAndLocation (PositionDTO positionDTO) {
+        return positionRepository.findAllByDescriptionContainingAndLocation(positionDTO.getDescription(), positionDTO.getLocation());
     }
 }

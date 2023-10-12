@@ -19,6 +19,7 @@ public class Position {
     public Position(String description, String location) {
         this.description = description;
         this.location = location;
+        this.url = "http://localhost:8080/position/" + id;
     }
 
     public String getDescription() {
