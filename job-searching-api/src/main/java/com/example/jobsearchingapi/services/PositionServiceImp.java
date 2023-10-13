@@ -3,12 +3,16 @@ package com.example.jobsearchingapi.services;
 import com.example.jobsearchingapi.exceptions.InvalidInputException;
 import com.example.jobsearchingapi.exceptions.ResourceNotFoundException;
 import com.example.jobsearchingapi.models.DTOs.PositionDTO;
+import com.example.jobsearchingapi.models.themuseapi.PositionFromApiDTO;
 import com.example.jobsearchingapi.models.themuseapi.ResultsDTO;
 import com.example.jobsearchingapi.models.Position;
 import com.example.jobsearchingapi.repositories.PositionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PositionServiceImp implements PositionService{
@@ -36,6 +40,8 @@ public class PositionServiceImp implements PositionService{
     public String savePosition (PositionDTO positionDTO) {
         Position position = new Position(positionDTO.getDescription(), positionDTO.getLocation());
         positionRepository.save(position);
+        position.setUrl("http://localhost:8080/position/" + position.getId());
+        positionRepository.save(position);
         return position.getUrl();
     }
 
@@ -45,12 +51,23 @@ public class PositionServiceImp implements PositionService{
         .orElseThrow(() -> new ResourceNotFoundException("Please provide position id"));
     }
 
-    public ResultsDTO findAllByDescriptionAndLocation (PositionDTO positionDTO) {
+    public List<PositionFromApiDTO> findAllByDescriptionAndLocation (PositionDTO positionDTO) {
         String uri = "https://www.themuse.com/api/public/jobs?page=1";
         RestTemplate restTemplate = new RestTemplate();
-        ResultsDTO positionsFromAPI = restTemplate.getForObject(uri, ResultsDTO.class);
+        ResultsDTO positions = restTemplate.getForObject(uri + "&location=" + positionDTO.getLocation(), ResultsDTO.class);
+
+        List<PositionFromApiDTO> positionsFromAPI = positions.findByDescriptionAndLocation(positionDTO.getDescription());
+
+        List<PositionFromApiDTO> positionsFromDB = positionRepository
+            .findAllByDescriptionContainingAndLocation(
+                positionDTO.getDescription(), positionDTO.getLocation())
+            .stream()
+            .map(position -> new PositionFromApiDTO(position.getDescription(), position.getLocation(), position.getUrl())).collect(Collectors.toList());
+
+        positionsFromAPI.addAll(positionsFromDB);
 
         return positionsFromAPI;
-        //return positionRepository.findAllByDescriptionContainingAndLocation(positionDTO.getDescription(), positionDTO.getLocation());
+
+
     }
 }

@@ -2,6 +2,7 @@ package com.example.jobsearchingapi.models.themuseapi;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PositionFromApiDTO {
@@ -17,6 +18,13 @@ public class PositionFromApiDTO {
   public PositionFromApiDTO(String description, List<LocationsDTO> locations, String url) {
     this.description = description;
     this.locations = locations;
+    this.url =  url;
+  }
+
+  public PositionFromApiDTO(String description, String location, String url) {
+    this.description = description;
+    this.locations = new ArrayList<>();
+    locations.add(new LocationsDTO(location));
     this.url =  url;
   }
 
