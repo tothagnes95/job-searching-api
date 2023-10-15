@@ -7,36 +7,37 @@ import javax.persistence.Id;
 
 @Entity
 public class Position {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
-    private String description;
-    private String location;
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  private Long id;
 
-    public Position(){};
+  private String description;
+  private String location;
 
-    public Position(String description, String location) {
-        this.description = description;
-        this.location = location;
-    }
+  public Position() {}
 
-    public String getDescription() {
-        return description;
-    }
+  public Position(String description, String location) {
+    this.description = description;
+    this.location = location;
+  }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+  public String getDescription() {
+    return description;
+  }
 
-    public String getLocation() {
-        return location;
-    }
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
+  public String getLocation() {
+    return location;
+  }
 
-    public Long getId() {
-        return id;
-    }
+  public void setLocation(String location) {
+    this.location = location;
+  }
+
+  public Long getId() {
+    return id;
+  }
 }

@@ -6,7 +6,7 @@ public class RefsDTO {
   @JsonProperty("landing_page")
   private String url;
 
-  public RefsDTO() {};
+  public RefsDTO() {}
 
   public RefsDTO(String url) {
     this.url = url;

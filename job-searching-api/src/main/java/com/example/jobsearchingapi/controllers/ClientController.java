@@ -13,12 +13,12 @@ public class ClientController {
   private ClientService clientService;
 
   @Autowired
-  public ClientController (ClientService clientService) {
+  public ClientController(ClientService clientService) {
     this.clientService = clientService;
   }
 
   @PostMapping("/clients")
-  public ResponseEntity<String> register (@RequestBody ClientDTO clientDTO) {
+  public ResponseEntity<String> register(@RequestBody ClientDTO clientDTO) {
     return ResponseEntity.ok(clientService.checkClientDetails(clientDTO));
   }
 }

@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.hamcrest.Matchers.matchesPattern;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -24,32 +25,41 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ClientControllerTest {
   private final ObjectMapper mapper = new ObjectMapper();
 
-  @Autowired
-  private ClientRepository clientRepository;
+  @Autowired private ClientRepository clientRepository;
   @Mock private ClientService clientService;
-  @InjectMocks
-  private ClientController clientController;
+  @InjectMocks private ClientController clientController;
 
-  @Autowired
-  private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
   @Test
   public void register_OK() throws Exception {
     ClientDTO clientDTO = new ClientDTO("agi", "agi@job.com");
-    mockMvc.perform(post("/clients")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(clientDTO)))
-            .andExpect(status().is(200));
-    // kellene az UUID-ja a client-nek
+    mockMvc
+        .perform(
+            post("/clients")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(clientDTO)))
+        .andExpect(status().is(200))
+        .andExpect(
+            content()
+                .string(
+                    matchesPattern(
+                        "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")));
   }
 
   @Test
-  public void register_name_missing() throws Exception{
+  public void register_name_missing() throws Exception {
     ClientDTO clientDTO = new ClientDTO(null, "agi@job.com");
-    mockMvc.perform(post("/clients")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(mapper.writeValueAsString(clientDTO)))
-            .andExpect(status().is(400))
-            .andExpect(content().json(mapper.writeValueAsString(new ErrorMessage("Please provide client name", "uri=/clients"))));
+    mockMvc
+        .perform(
+            post("/clients")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(clientDTO)))
+        .andExpect(status().is(400))
+        .andExpect(
+            content()
+                .json(
+                    mapper.writeValueAsString(
+                        new ErrorMessage("Please provide client name", "uri=/clients"))));
   }
 }

@@ -29,85 +29,82 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @SpringBootTest
 public class PositionControllerTest {
-    private final ObjectMapper mapper = new ObjectMapper();
+  private final ObjectMapper mapper = new ObjectMapper();
+  @Autowired private PositionRepository positionRepository;
+  @Autowired private ClientRepository clientRepository;
+  @Mock private PositionService positionService;
+  @InjectMocks private PositionController positionController;
+  @Autowired private MockMvc mockMvc;
+  private Client client;
+  private PositionDTO positionDTO;
+  private Position position;
 
-    @Autowired
-    private PositionRepository positionRepository;
-    @Autowired
-    private ClientRepository clientRepository;
-    @Mock
-    private PositionService positionService;
-    @InjectMocks
-    private PositionController positionController;
+  @BeforeEach
+  public void setup() {
+    client = new Client("Agi", "agi@agi.com");
+    clientRepository.save(client);
+    positionDTO = new PositionDTO("Software", "Flexible / Remote");
+  }
 
-    @Autowired
-    private MockMvc mockMvc;
-    private Client client;
-    private PositionDTO positionDTO;
-    private Position position;
-
-    @BeforeEach
-    public void setup(){
-        client = new Client("Agi", "agi@agi.com");
-        clientRepository.save(client);
-        positionDTO = new PositionDTO("Software", "Flexible / Remote");
-    }
-
-    @Test
-    public void createPosition_OK() throws Exception {
-        mockMvc
-            .perform(
-                post("/positions")
-                    .header("UUID", client.getUuid())
+  @Test
+  public void createPosition_OK() throws Exception {
+    mockMvc
+        .perform(
+            post("/positions")
+                .header("UUID", client.getUuid())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(positionDTO)))
         .andExpect(status().is(200))
         .andExpect(content().string("http://localhost:8080/position/2"));
   }
 
-    @Test
-    public void createPosition_UUID_incorrect() throws Exception {
-        mockMvc
-                .perform(
-                        post("/positions")
-                                .header("UUID", "wert")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(mapper.writeValueAsString(positionDTO)))
-                .andExpect(status().is(400))
-                .andExpect(content().json(mapper.writeValueAsString(new ErrorMessage("Provided UUID is not correct", "uri=/positions"))));
-    }
+  @Test
+  public void createPosition_UUID_incorrect() throws Exception {
+    mockMvc
+        .perform(
+            post("/positions")
+                .header("UUID", "wert")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(positionDTO)))
+        .andExpect(status().is(400))
+        .andExpect(
+            content()
+                .json(
+                    mapper.writeValueAsString(
+                        new ErrorMessage("Provided UUID is not correct", "uri=/positions"))));
+  }
 
-    @Test
-    public void getPositionById_OK () throws Exception {
-      position = new Position("Software", "Flexible / Remote");
-      positionRepository.save(position);
-        mockMvc
-                .perform(
-                        get("/position/" + position.getId())
-                                .header("UUID", client.getUuid()))
-                .andExpect(status().is(200))
-                .andExpect(content().json(mapper.writeValueAsString(positionDTO)));
-    }
+  @Test
+  public void getPositionById_OK() throws Exception {
+    position = new Position("Software", "Flexible / Remote");
+    positionRepository.save(position);
+    mockMvc
+        .perform(get("/position/" + position.getId()).header("UUID", client.getUuid()))
+        .andExpect(status().is(200))
+        .andExpect(content().json(mapper.writeValueAsString(positionDTO)));
+  }
 
-    @Test
-    public void getPositionById_id_incorrect () throws Exception {
-        mockMvc
-                .perform(
-                        get("/position/123")
-                                .header("UUID", client.getUuid()))
-                .andExpect(status().is(400))
-                .andExpect(content().json(mapper.writeValueAsString(new ErrorMessage("Please provide position id", "uri=/position/123"))));
-    }
+  @Test
+  public void getPositionById_id_incorrect() throws Exception {
+    mockMvc
+        .perform(get("/position/123").header("UUID", client.getUuid()))
+        .andExpect(status().is(400))
+        .andExpect(
+            content()
+                .json(
+                    mapper.writeValueAsString(
+                        new ErrorMessage("Please provide position id", "uri=/position/123"))));
+  }
 
-    @Test
-    public void getPositions() throws Exception {
-        mockMvc
-                .perform(
-                        get("/positions")
-                                .header("UUID", client.getUuid())
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(mapper.writeValueAsString(positionDTO)))
-                .andExpect(status().is(200));
-        //mockolni az api-t?
-    }
+  @Test
+  public void getPositions() throws Exception {
+    mockMvc
+        .perform(
+            get("/positions")
+                .header("UUID", client.getUuid())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(positionDTO)))
+        .andExpect(status().is(200));
+    // mockolni az api-t?
+  }
 }

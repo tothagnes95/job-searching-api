@@ -10,12 +10,10 @@ public class Client {
   private Long id;
 
   private String uuid;
-
   private String name;
   private String email;
 
-  public Client () {
-  }
+  public Client() {}
 
   public Client(String name, String email) {
     this.name = name;

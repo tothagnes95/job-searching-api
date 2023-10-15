@@ -12,5 +12,4 @@ public interface PositionRepository extends JpaRepository<Position, Long> {
   List<Position> findAllByDescriptionContainingAndLocation(String description, String Location);
 
   Optional<Position> findById(Long id);
-
 }

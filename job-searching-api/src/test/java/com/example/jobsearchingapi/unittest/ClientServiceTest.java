@@ -24,77 +24,92 @@ public class ClientServiceTest {
   private ClientDTO clientDTO;
 
   @BeforeEach
-  public void setup(){
+  public void setup() {
     MockitoAnnotations.openMocks(this);
   }
 
   @Test
-  public void isValidEmail_true(){
+  public void isValidEmail_true() {
     assertTrue(clientServiceImp.isValidEmail("agi@agi.com"));
   }
 
   @Test
-  public void isValidEmail_false(){
+  public void isValidEmail_false() {
     assertFalse(clientServiceImp.isValidEmail("agi"));
   }
 
   @Test
-  public void checkClientDetails_nameAndEmail_missing(){
+  public void checkClientDetails_nameAndEmail_missing() {
     clientDTO = new ClientDTO(null, null);
-    Exception exception = assertThrows(ResourceNotFoundException.class, () -> clientServiceImp.checkClientDetails(clientDTO));
+    Exception exception =
+        assertThrows(
+            ResourceNotFoundException.class, () -> clientServiceImp.checkClientDetails(clientDTO));
     String expectedMessage = "Please provide client name and email";
 
     assertTrue(expectedMessage.contains(exception.getMessage()));
   }
 
   @Test
-  public void checkClientDetails_name_missing(){
+  public void checkClientDetails_name_missing() {
     clientDTO = new ClientDTO(null, "agi@agi.com");
-    Exception exception = assertThrows(ResourceNotFoundException.class, () -> clientServiceImp.checkClientDetails(clientDTO));
+    Exception exception =
+        assertThrows(
+            ResourceNotFoundException.class, () -> clientServiceImp.checkClientDetails(clientDTO));
     String expectedMessage = "Please provide client name";
 
     assertTrue(expectedMessage.contains(exception.getMessage()));
   }
 
   @Test
-  public void checkClientDetails_email_missing(){
+  public void checkClientDetails_email_missing() {
     clientDTO = new ClientDTO("agi", null);
-    Exception exception = assertThrows(ResourceNotFoundException.class, () -> clientServiceImp.checkClientDetails(clientDTO));
+    Exception exception =
+        assertThrows(
+            ResourceNotFoundException.class, () -> clientServiceImp.checkClientDetails(clientDTO));
     String expectedMessage = "Please provide client email";
 
     assertTrue(expectedMessage.contains(exception.getMessage()));
   }
 
   @Test
-  public void checkClientDetails_name_tooLong(){
-    clientDTO = new ClientDTO("LlanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogochLlanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch", "agi@email.com");
-    Exception exception = assertThrows(InvalidInputException.class, () -> clientServiceImp.checkClientDetails(clientDTO));
+  public void checkClientDetails_name_tooLong() {
+    clientDTO =
+        new ClientDTO(
+            "LlanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogochLlanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch",
+            "agi@email.com");
+    Exception exception =
+        assertThrows(
+            InvalidInputException.class, () -> clientServiceImp.checkClientDetails(clientDTO));
     String expectedMessage = "The provided name must be shorter than 100 character";
 
     assertTrue(expectedMessage.contains(exception.getMessage()));
   }
 
   @Test
-  public void checkClientDetails_email_invalid(){
+  public void checkClientDetails_email_invalid() {
     clientDTO = new ClientDTO("agi", "agi");
-    Exception exception = assertThrows(InvalidInputException.class, () -> clientServiceImp.checkClientDetails(clientDTO));
+    Exception exception =
+        assertThrows(
+            InvalidInputException.class, () -> clientServiceImp.checkClientDetails(clientDTO));
     String expectedMessage = "Please provide an email in the following format: input@input.com";
 
     assertTrue(expectedMessage.contains(exception.getMessage()));
   }
 
   @Test
-  public void checkClientDetails_email_isTaken(){
+  public void checkClientDetails_email_isTaken() {
     clientDTO = new ClientDTO("agi", "agi@email.com");
     when(clientRepository.existsByEmail(clientDTO.getEmail())).thenReturn(true);
-    Exception exception = assertThrows(InvalidInputException.class, () -> clientServiceImp.checkClientDetails(clientDTO));
+    Exception exception =
+        assertThrows(
+            InvalidInputException.class, () -> clientServiceImp.checkClientDetails(clientDTO));
     String expectedMessage = "The provided email is already taken, please choose another one";
 
     assertTrue(expectedMessage.contains(exception.getMessage()));
   }
 
   @Test
-  public void checkClientDetails_OK () {
+  public void checkClientDetails_OK() {
     clientDTO = new ClientDTO("agi", "agi@email.com");
     client = new Client("agi", "agi@email.com");
     when(clientRepository.save(client)).thenReturn(client);
@@ -103,9 +118,10 @@ public class ClientServiceTest {
   }
 
   @Test
-  public void isUUIDValid_false(){
+  public void isUUIDValid_false() {
     when(clientRepository.existsClientByUuid("id")).thenReturn(false);
-    Exception exception = assertThrows(InvalidInputException.class, () -> clientServiceImp.isUUIDValid("id"));
+    Exception exception =
+        assertThrows(InvalidInputException.class, () -> clientServiceImp.isUUIDValid("id"));
     String expectedMessage = "Provided UUID is not correct";
 
     assertTrue(expectedMessage.contains(exception.getMessage()));

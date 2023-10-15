@@ -9,11 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ClientServiceImp implements ClientService{
+public class ClientServiceImp implements ClientService {
   private ClientRepository clientRepository;
 
   @Autowired
-  public ClientServiceImp (ClientRepository clientRepository) {
+  public ClientServiceImp(ClientRepository clientRepository) {
     this.clientRepository = clientRepository;
   }
 
@@ -22,27 +22,29 @@ public class ClientServiceImp implements ClientService{
     return email.matches(emailRegex);
   }
 
-  public String checkClientDetails (ClientDTO clientDTO){
-    if(clientDTO.getName() == null && clientDTO.getEmail() == null) {
+  public String checkClientDetails(ClientDTO clientDTO) {
+    if (clientDTO.getName() == null && clientDTO.getEmail() == null) {
       throw new ResourceNotFoundException("Please provide client name and email");
-    } else if(clientDTO.getName() == null) {
+    } else if (clientDTO.getName() == null) {
       throw new ResourceNotFoundException("Please provide client name");
-    } else if(clientDTO.getEmail() == null) {
+    } else if (clientDTO.getEmail() == null) {
       throw new ResourceNotFoundException("Please provide client email");
-    } else if(clientDTO.getName().length() > 100) {
+    } else if (clientDTO.getName().length() > 100) {
       throw new InvalidInputException("The provided name must be shorter than 100 character");
     } else if (!isValidEmail(clientDTO.getEmail())) {
-      throw new InvalidInputException("Please provide an email in the following format: input@input.com");
+      throw new InvalidInputException(
+          "Please provide an email in the following format: input@input.com");
     } else if (clientRepository.existsByEmail(clientDTO.getEmail())) {
-      throw new InvalidInputException("The provided email is already taken, please choose another one");
+      throw new InvalidInputException(
+          "The provided email is already taken, please choose another one");
     }
     Client client = new Client(clientDTO.getName(), clientDTO.getEmail());
     clientRepository.save(client);
-      return client.getUuid();
+    return client.getUuid();
   }
 
-  public void isUUIDValid (String id) {
-    if(!clientRepository.existsClientByUuid(id)) {
+  public void isUUIDValid(String id) {
+    if (!clientRepository.existsClientByUuid(id)) {
       throw new InvalidInputException("Provided UUID is not correct");
     }
   }

@@ -4,7 +4,7 @@ public class ClientDTO {
   private String name;
   private String email;
 
-  public ClientDTO (){}
+  public ClientDTO() {}
 
   public ClientDTO(String name, String email) {
     this.name = name;
@@ -26,6 +26,4 @@ public class ClientDTO {
   public void setEmail(String email) {
     this.email = email;
   }
-
-
 }

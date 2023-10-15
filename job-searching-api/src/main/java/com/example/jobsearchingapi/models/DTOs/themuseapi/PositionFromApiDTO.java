@@ -8,13 +8,14 @@ import java.util.List;
 public class PositionFromApiDTO {
   @JsonProperty("name")
   private String description;
+
   @JsonProperty("locations")
   private List<LocationsDTO> locations;
 
   @JsonProperty("refs")
   private RefsDTO refsDTO;
 
-  public PositionFromApiDTO () {};
+  public PositionFromApiDTO() {}
 
   public PositionFromApiDTO(String description, List<LocationsDTO> locations, RefsDTO refsDTO) {
     this.description = description;
