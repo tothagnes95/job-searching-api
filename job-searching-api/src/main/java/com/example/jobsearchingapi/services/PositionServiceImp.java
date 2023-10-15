@@ -40,15 +40,15 @@ public class PositionServiceImp implements PositionService{
     public String savePosition (PositionDTO positionDTO) {
         Position position = new Position(positionDTO.getDescription(), positionDTO.getLocation());
         positionRepository.save(position);
-        position.setUrl("http://localhost:8080/position/" + position.getId());
-        positionRepository.save(position);
-        return position.getUrl();
+        return "http://localhost:8080/position/" + position.getId();
     }
 
-    public Position findById (String id) {
-    return positionRepository
-        .findById(Long.valueOf(id))
-        .orElseThrow(() -> new ResourceNotFoundException("Please provide position id"));
+    public PositionDTO findById (String id) {
+        Position position = positionRepository
+                .findById(Long.valueOf(id))
+                .orElseThrow(() -> new ResourceNotFoundException("Please provide position id"));
+
+        return new PositionDTO(position.getDescription(), position.getLocation());
     }
 
     public List<PositionFromApiDTO> findAllByDescriptionAndLocation (PositionDTO positionDTO) {
@@ -56,18 +56,16 @@ public class PositionServiceImp implements PositionService{
         RestTemplate restTemplate = new RestTemplate();
         ResultsDTO positions = restTemplate.getForObject(uri + "&location=" + positionDTO.getLocation(), ResultsDTO.class);
 
-        List<PositionFromApiDTO> positionsFromAPI = positions.findByDescriptionAndLocation(positionDTO.getDescription());
+        List<PositionFromApiDTO> positionsFromAPI = positions.getListOfPositionsFromApi().stream().filter(position -> position.getDescription().contains(positionDTO.getDescription())).collect(Collectors.toList());
 
         List<PositionFromApiDTO> positionsFromDB = positionRepository
             .findAllByDescriptionContainingAndLocation(
                 positionDTO.getDescription(), positionDTO.getLocation())
             .stream()
-            .map(position -> new PositionFromApiDTO(position.getDescription(), position.getLocation(), position.getUrl())).collect(Collectors.toList());
+            .map(position -> new PositionFromApiDTO(position.getDescription(), position.getLocation(), "http://localhost:8080/position/" + position.getId())).collect(Collectors.toList());
 
         positionsFromAPI.addAll(positionsFromDB);
 
         return positionsFromAPI;
-
-
     }
 }

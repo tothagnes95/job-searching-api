@@ -13,5 +13,5 @@ public interface PositionService {
 
     List<PositionFromApiDTO> findAllByDescriptionAndLocation (PositionDTO positionDTO);
 
-    Position findById (String id);
+    PositionDTO findById (String id);
 }

@@ -12,7 +12,6 @@ public class Position {
     private Long id;
     private String description;
     private String location;
-    private String url;
 
     public Position(){};
 
@@ -35,14 +34,6 @@ public class Position {
 
     public void setLocation(String location) {
         this.location = location;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 
     public Long getId() {

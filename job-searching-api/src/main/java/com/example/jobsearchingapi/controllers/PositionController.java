@@ -1,11 +1,14 @@
 package com.example.jobsearchingapi.controllers;
 
 import com.example.jobsearchingapi.models.DTOs.PositionDTO;
+import com.example.jobsearchingapi.models.DTOs.themuseapi.PositionFromApiDTO;
 import com.example.jobsearchingapi.services.ClientService;
 import com.example.jobsearchingapi.services.PositionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class PositionController {
@@ -26,13 +29,13 @@ public class PositionController {
     }
 
     @GetMapping("/position/{id}")
-    public ResponseEntity<?> getPositionById (@RequestHeader (value="UUID") String uuid, @PathVariable String id) {
+    public ResponseEntity<PositionDTO> getPositionById (@RequestHeader (value="UUID") String uuid, @PathVariable String id) {
         clientService.isUUIDValid(uuid);
         return ResponseEntity.ok(positionService.findById(id));
     }
 
     @GetMapping("/positions")
-    public ResponseEntity<?> getPositions(@RequestHeader (value="UUID") String id, @RequestBody PositionDTO positionDTO){
+    public ResponseEntity<List<PositionFromApiDTO>> getPositions(@RequestHeader (value="UUID") String id, @RequestBody PositionDTO positionDTO){
         clientService.isUUIDValid(id);
         positionService.checkPositionDetails(positionDTO);
         return ResponseEntity.ok(positionService.findAllByDescriptionAndLocation(positionDTO));

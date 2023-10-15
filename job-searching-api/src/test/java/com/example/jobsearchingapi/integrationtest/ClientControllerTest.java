@@ -34,16 +34,17 @@ public class ClientControllerTest {
   private MockMvc mockMvc;
 
   @Test
-  public void register_OK_test() throws Exception {
+  public void register_OK() throws Exception {
     ClientDTO clientDTO = new ClientDTO("agi", "agi@job.com");
     mockMvc.perform(post("/clients")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(clientDTO)))
             .andExpect(status().is(200));
+    // kellene az UUID-ja a client-nek
   }
 
   @Test
-  public void register_missing_name() throws Exception{
+  public void register_name_missing() throws Exception{
     ClientDTO clientDTO = new ClientDTO(null, "agi@job.com");
     mockMvc.perform(post("/clients")
                     .contentType(MediaType.APPLICATION_JSON)
