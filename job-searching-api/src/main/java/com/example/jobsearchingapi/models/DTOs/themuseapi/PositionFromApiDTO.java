@@ -1,4 +1,4 @@
-package com.example.jobsearchingapi.models.themuseapi;
+package com.example.jobsearchingapi.models.DTOs.themuseapi;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -10,22 +10,23 @@ public class PositionFromApiDTO {
   private String description;
   @JsonProperty("locations")
   private List<LocationsDTO> locations;
-  @JsonProperty("landing_page")
-  private String url;
+
+  @JsonProperty("refs")
+  private RefsDTO refsDTO;
 
   public PositionFromApiDTO () {};
 
-  public PositionFromApiDTO(String description, List<LocationsDTO> locations, String url) {
+  public PositionFromApiDTO(String description, List<LocationsDTO> locations, RefsDTO refsDTO) {
     this.description = description;
     this.locations = locations;
-    this.url =  url;
+    this.refsDTO = refsDTO;
   }
 
   public PositionFromApiDTO(String description, String location, String url) {
     this.description = description;
     this.locations = new ArrayList<>();
     locations.add(new LocationsDTO(location));
-    this.url =  url;
+    this.refsDTO = new RefsDTO(url);
   }
 
   public String getDescription() {
@@ -44,11 +45,11 @@ public class PositionFromApiDTO {
     this.locations = locations;
   }
 
-  public String getUrl() {
-    return url;
+  public RefsDTO getRefsDTO() {
+    return refsDTO;
   }
 
-  public void setUrl(String url) {
-    this.url = url;
+  public void setRefsDTO(RefsDTO refsDTO) {
+    this.refsDTO = refsDTO;
   }
 }

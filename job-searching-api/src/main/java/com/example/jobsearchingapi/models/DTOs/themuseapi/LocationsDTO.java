@@ -1,4 +1,4 @@
-package com.example.jobsearchingapi.models.themuseapi;
+package com.example.jobsearchingapi.models.DTOs.themuseapi;
 
 public class LocationsDTO {
   private String name;

@@ -2,8 +2,7 @@ package com.example.jobsearchingapi.services;
 
 import com.example.jobsearchingapi.models.DTOs.PositionDTO;
 import com.example.jobsearchingapi.models.Position;
-import com.example.jobsearchingapi.models.themuseapi.PositionFromApiDTO;
-import com.example.jobsearchingapi.models.themuseapi.ResultsDTO;
+import com.example.jobsearchingapi.models.DTOs.themuseapi.PositionFromApiDTO;
 
 import java.util.List;
 
