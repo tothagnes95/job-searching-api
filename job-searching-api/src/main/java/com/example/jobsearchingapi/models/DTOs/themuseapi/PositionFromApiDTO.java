@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class PositionFromApiDTO {
   @JsonProperty("name")
@@ -52,5 +53,18 @@ public class PositionFromApiDTO {
 
   public void setRefsDTO(RefsDTO refsDTO) {
     this.refsDTO = refsDTO;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    PositionFromApiDTO that = (PositionFromApiDTO) o;
+    return Objects.equals(description, that.description) && Objects.equals(locations, that.locations) && Objects.equals(refsDTO, that.refsDTO);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(description, locations, refsDTO);
   }
 }

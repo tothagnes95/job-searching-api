@@ -10,7 +10,6 @@ public class Position {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
   private Long id;
-
   private String description;
   private String location;
 

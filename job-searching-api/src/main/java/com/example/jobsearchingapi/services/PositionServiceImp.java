@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,15 +54,19 @@ public class PositionServiceImp implements PositionService {
   }
 
   public List<PositionFromApiDTO> findAllByDescriptionAndLocation(PositionDTO positionDTO) {
-    String uri = "https://www.themuse.com/api/public/jobs?page=1";
+    String baseUrl = "https://www.themuse.com/api/public/jobs?page=1&location=";
     RestTemplate restTemplate = new RestTemplate();
     ResultsDTO positions =
-        restTemplate.getForObject(uri + "&location=" + positionDTO.getLocation(), ResultsDTO.class);
+        restTemplate.getForObject(baseUrl + positionDTO.getLocation(), ResultsDTO.class);
 
-    List<PositionFromApiDTO> positionsFromAPI =
-        positions.getListOfPositionsFromApi().stream()
-            .filter(position -> position.getDescription().contains(positionDTO.getDescription()))
-            .collect(Collectors.toList());
+    List<PositionFromApiDTO> positionsFromAPI = new ArrayList<>();
+
+    if (!positions.getListOfPositionsFromApi().isEmpty()) {
+      positionsFromAPI =
+          positions.getListOfPositionsFromApi().stream()
+              .filter(position -> position.getDescription().contains(positionDTO.getDescription()))
+              .collect(Collectors.toList());
+    }
 
     List<PositionFromApiDTO> positionsFromDB =
         positionRepository
@@ -76,7 +81,9 @@ public class PositionServiceImp implements PositionService {
                         "http://localhost:8080/position/" + position.getId()))
             .collect(Collectors.toList());
 
-    positionsFromAPI.addAll(positionsFromDB);
+    if (!positionsFromDB.isEmpty()) {
+      positionsFromAPI.addAll(positionsFromDB);
+    }
 
     return positionsFromAPI;
   }

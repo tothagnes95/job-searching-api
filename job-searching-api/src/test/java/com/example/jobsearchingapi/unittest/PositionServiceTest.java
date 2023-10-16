@@ -149,7 +149,7 @@ public class PositionServiceTest {
         .thenReturn(new ArrayList<>());
 
     assertEquals(
-        positionFromApiDTO.getDescription(),
-        positionServiceImp.findAllByDescriptionAndLocation(positionDTO).get(0).getDescription());
+        positionFromApiDTO,
+        positionServiceImp.findAllByDescriptionAndLocation(positionDTO).get(0));
   }
 }

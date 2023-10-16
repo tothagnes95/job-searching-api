@@ -8,7 +8,6 @@ public class Client {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
-
   private String uuid;
   private String name;
   private String email;
